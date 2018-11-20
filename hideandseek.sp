@@ -30,7 +30,7 @@ public void OnPluginStart()
     ARRAY_Commands = CreateArray(100); 
     HookEvent("teamplay_round_win", Event_RoundWin, EventHookMode_Post); 
     HookEvent("player_death", Event_PlayerDeath);
-    HookEvent("round_start", GameStart);
+    HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy); 
     RegAdminCmd("sm_sayac", CMD_StartCountDown, ADMFLAG_GENERIC, "Sayac baslatma.");
     RegAdminCmd("sm_saklambaciptal", saklambac_iptal, ADMFLAG_GENERIC, "SaklambacIptal.");
 
@@ -43,13 +43,16 @@ public void OnPluginStart()
     }
     
 } 
-public Action:GameStart(Handle:Event, const String:Name[], bool:Broadcast)
+public OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast) 
 {
     for (new i = 1; i <= MaxClients; i++)
     { 
         if (IsClientInGame(i) && (TF2_GetClientTeam(i) != TFTeam_Blue))
         {
             SetClientListeningFlags(i, VOICE_MUTED);
+        }
+        else {
+            SetClientListeningFlags(i, VOICE_NORMAL);
         }
     }
 }
