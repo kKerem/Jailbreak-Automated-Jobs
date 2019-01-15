@@ -1,2 +1,2 @@
-# jailbreak_HideAndSeek
+# Jailbreak Automated Jobs
 Automated jobs.
