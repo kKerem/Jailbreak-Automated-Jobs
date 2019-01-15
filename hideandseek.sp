@@ -33,15 +33,6 @@ public void OnPluginStart()
     HookEvent("round_start", OnRoundStart, EventHookMode_PostNoCopy); 
     RegAdminCmd("sm_sayac", CMD_StartCountDown, ADMFLAG_GENERIC, "Sayac baslatma.");
     RegAdminCmd("sm_saklambaciptal", saklambac_iptal, ADMFLAG_GENERIC, "SaklambacIptal.");
-
-    for (new i = 1; i <= MaxClients; i++)
-    { 
-        if (IsClientInGame(i) && (TF2_GetClientTeam(i) != TFTeam_Blue))
-        {
-            SetClientListeningFlags(i, VOICE_MUTED);
-        }
-    }
-    
 } 
 public OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast) 
 {
@@ -49,12 +40,16 @@ public OnRoundStart(Handle:event, const String:name[], bool:dontBroadcast)
     { 
         if (IsClientInGame(i) && (TF2_GetClientTeam(i) != TFTeam_Blue))
         {
-            SetClientListeningFlags(i, VOICE_MUTED);
+            BaseComm_SetClientMute(i, 1);
         }
         else {
-            SetClientListeningFlags(i, VOICE_NORMAL);
+            BaseComm_SetClientMute(i, 0);
         }
     }
+}
+public bool:OnClientConnect(client, String:rejectmsg[], maxlen)
+{
+    BaseComm_SetClientMute(client, 1);
 }
 public Action:Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 {
@@ -196,8 +191,8 @@ public Action CMD_StartCountDown(int client, int args)
         panel.Send(client, PanelHandler1, 30);
         delete panel;
 
-        ServerCommand("sm_setclass @red scout");
-        ServerCommand("sm_gi @red 0 3 50 8 0 0 tf_weapon_bat 1");
+        ServerCommand("sm_setclass @red pyro");
+        ServerCommand("sm_gi @red 2 3 -1 -1 0 0 tf_weapon_fireaxe \"16, 2\"");
         ServerCommand("sm_teleport @red -845 -706 -27");
         ServerCommand("sm_teleport @blue -1118 -142 166");
         ServerCommand("sm_hp @red 125");
@@ -244,7 +239,8 @@ public Action TMR_Tick(Handle tmr)
                     PrintCenterTextAll("SAKLAMBAC BASLADI!!"); 
                     CPrintToChatAll("{dimgray}[ {darkgray}SM {dimgray}] {gray}Yer söyleme veya ipucu vermeyi engelleyebilmek için yetkili saklambaç oyununu sonlandırana veya el bitimine kadar chat kullanımı kapalıdır.");
                 }
-                if(StrEqual("dostatesi",tmrCmd[1],true)) {          
+                if(StrEqual("dostatesi",tmrCmd[1],true)) {        
+                    // CPrintToChatAll(tmrCmd[1]);  
                     ServerCommand("mp_friendlyfire 1;sm_ffacikmi 1");
                     PrintCenterTextAll("DOST ATESI BASLADI!!"); 
                     CPrintToChatAll("{dimgray}[ {fullred}DIKKAT {dimgray}] {gray}Dost ateşi başladı!");
