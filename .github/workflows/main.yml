@@ -1,13 +1,17 @@
-- name: Setup SourcePawn Compiler
-  # You may pin to the exact commit or the version.
-  # uses: rumblefrog/setup-sp@434d31974de507cccf02f8bbbbc1e38c8901dc20
-  uses: rumblefrog/setup-sp@v1.2.1
-  with:
-    # Version of SP compiler
-    version: # default is 1.10.x
-    # File to parse to get the version of the plugin
-    version-file: # optional, default is 
-    # Name of the define for the version of the plugin if you are using one
-    define-name: # optional, default is 
-    # Whether spcomp should not be proxied to fix relative include path
-    no-spcomp-proxy: # optional, default is false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        sm-version: [ '1.10.x', '1.11.x', '1.11.6467', '>= 1.11.6478']
+
+    name: SM version ${{ matrix.sm-version }}
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Setup SP
+        uses: rumblefrog/setup-sp@master
+        with:
+          version: ${{ matrix.sm-version }}
+
+      - run: spcomp -iAnotherIncludeDirectory plugin.sp -o output/plugin.smx
