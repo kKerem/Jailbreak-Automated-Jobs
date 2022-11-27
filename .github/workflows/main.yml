@@ -1,3 +1,7 @@
+- name: Setup SourcePawn Compiler
+  uses: rumblefrog/setup-sp@v1.2.1
+
+
 jobs:
   build:
     runs-on: ubuntu-latest
